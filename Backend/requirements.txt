@@ -1,8 +1,7 @@
-flask
-requests
-pillow
-torch
-diffusers
-transformers
+Flask
 gunicorn
-accelerate
+requests
+Pillow
+flask-cors
+Flask-CORS==3.1.1
+python-dotenv==1.0.0
