@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 import requests
 from PIL import Image, ImageEnhance, ImageChops
@@ -88,4 +89,5 @@ def generate_image():
     })
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.getenv('PORT', 5000))  # Get the port from the environment variable, default to 5000
+    app.run(host='0.0.0.0', port=port, debug=True)
