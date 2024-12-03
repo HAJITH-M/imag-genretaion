@@ -1,7 +1,5 @@
-Flask
-gunicorn
-requests
-Pillow
-flask-cors
+Flask==2.3.0
 Flask-CORS==3.1.1
+requests==2.31.0
+Pillow==9.5.0
 python-dotenv==1.0.0
