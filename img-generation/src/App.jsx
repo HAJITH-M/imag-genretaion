@@ -1,35 +1,64 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [prompt, setPrompt] = useState(""); // State to hold the user input
+  const [imageData, setImageData] = useState(null); // State to hold the generated image
+  const [error, setError] = useState(""); // State to hold any errors
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(""); // Reset error on new submission
+    setImageData(null); // Reset image on new submission
+
+    // Make the POST request to the Flask API
+    try {
+      const response = await fetch("http://192.168.127.88:5000/generate-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      const data = await response.json();
+
+      if (data.image) {
+        setImageData(data.image); // Set the image data to state
+      } else {
+        setError("Failed to generate image.");
+      }
+    } catch (err) {
+      setError("Error connecting to the backend.");
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="App">
+      <h1>Image Generator</h1>
+      <form onSubmit={handleSubmit}>
+        <textarea
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          placeholder="Enter a description to generate an image"
+          rows="4"
+          cols="50"
+        />
+        <br />
+        <button type="submit">Generate Image</button>
+      </form>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {imageData && (
+  <div>
+    <h2>Generated Image:</h2>
+    <img src={`data:image/png;base64,${imageData}`} alt="Generated" />
+  </div>
+)}
+
+    </div>
+  );
 }
 
-export default App
+export default App;
